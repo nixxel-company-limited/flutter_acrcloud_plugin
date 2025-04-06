@@ -20,7 +20,7 @@ ACRCloudResponseStatus _$ACRCloudResponseStatusFromJson(
     ACRCloudResponseStatus(
       json['msg'] as String,
       json['version'] as String,
-      json['code'] as int,
+      (json['code'] as num).toInt(),
     );
 
 ACRCloudResponseMetadata _$ACRCloudResponseMetadataFromJson(
@@ -48,12 +48,12 @@ ACRCloudResponseMusicItem _$ACRCloudResponseMusicItemFromJson(
               (e) => ACRCloudResponseArtist.fromJson(e as Map<String, dynamic>))
           .toList(),
       json['acrid'] as String,
-      json['result_from'] as int,
+      (json['result_from'] as num).toInt(),
       json['title'] as String,
-      json['duration_ms'] as int,
+      (json['duration_ms'] as num).toInt(),
       json['release_date'] as String,
-      json['score'] as int,
-      json['play_offset_ms'] as int,
+      (json['score'] as num).toInt(),
+      (json['play_offset_ms'] as num).toInt(),
     );
 
 ACRCloudResponseAlbum _$ACRCloudResponseAlbumFromJson(
@@ -73,7 +73,7 @@ ACRCloudResponseCustomFileItem _$ACRCloudResponseCustomFileItemFromJson(
     ACRCloudResponseCustomFileItem(
       json['acrid'] as String,
       json['title'] as String,
-      json['duration_ms'] as int,
-      json['score'] as int,
-      json['play_offset_ms'] as int,
+      (json['duration_ms'] as num).toInt(),
+      (json['score'] as num).toInt(),
+      (json['play_offset_ms'] as num).toInt(),
     );
