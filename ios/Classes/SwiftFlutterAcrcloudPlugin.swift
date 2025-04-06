@@ -66,26 +66,31 @@ public class SwiftFlutterAcrcloudPlugin: NSObject, FlutterPlugin {
         self.isListening = false
         result(true)
     } else if call.method == "createFingerprint" {
-        guard let args = call.arguments as? [String: Any],
-              let base64PCM = args["pcmData"] as? String,
-              let pcmData = Data(base64Encoded: base64PCM) else {
+        guard let args = call.arguments as? [String: Any] else {
           result(FlutterError(code: "INVALID_ARGUMENT", message: "Missing or invalid PCM", details: nil))
           return
         }
 
+        guard let flutterPcmData = args["pcmData"] as? FlutterStandardTypedData else {
+            result(FlutterError(code: "INVALID_ARGUMENT", message: "Cannot Cast pcm", details: nil))
+            return
+        }
+
+        let pcmData = Data(flutterPcmData.data)
+
          if let fingerprintData = ACRCloudRecognition.get_fingerprint(pcmData) {
-            let fingerprintBase64 = fingerprintData.base64EncodedString()
-            result(fingerprintBase64)
+            result(fingerprintData)
          } else {
             result(FlutterError(code: "FINGERPRINT_ERROR", message: "Failed to create fingerprint", details: nil))
          }
     } else if call.method == "recognizeFingerPrint" {
          guard let args = call.arguments as? [String: Any],
-              let base64Fingerprint = args["fingerprint"] as? String,
-              let fingerprintData = Data(base64Encoded: base64Fingerprint) else {
+              let flutterFingerprintData = args["fingerprint"] as? FlutterStandardTypedData else {
           result(FlutterError(code: "INVALID_ARGUMENT", message: "Missing or invalid fingerprint", details: nil))
           return
         }
+
+        let fingerprintData = Data(flutterFingerprintData.data)
         let recResult = self._client!.recognize_fp(fingerprintData)
         result(recResult)
     }
