@@ -101,9 +101,13 @@ class ACRCloud {
     return _session!;
   }
 
-  static Future<Uint8List?> createFingerPrint(Uint8List pcmData) async {// final String base64PCM = base64Encode(pcmData);
+  static Future<Uint8List?> createFingerPrint(Uint8List pcmData,int soundSampleRate,int soundChannels) async {// final String base64PCM = base64Encode(pcmData);
     final result = await _channel
-        .invokeMethod<Uint8List>('createFingerprint', {'pcmData': pcmData});
+        .invokeMethod<Uint8List>('createFingerprint', {
+          'pcmData': pcmData,
+          'sampleRate': soundSampleRate,
+          'soundChannels':soundChannels
+        });
     return result;
   }
 
@@ -113,7 +117,7 @@ class ACRCloud {
           'ACRCloud is not set up! You forgot to call ACRCloud.setUp()');
     }
     final result = await _channel.invokeMethod<String>(
-        'recognizeFingerPrint', {'fingerprint': fingerprint});
+        'recognizeFingerprint', {'fingerprint': fingerprint});
     if (result != null) {
       return ACRCloudResponse.fromJson(json.decode(result));
     } else {
