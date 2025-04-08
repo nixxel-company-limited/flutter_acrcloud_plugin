@@ -83,7 +83,7 @@ public class SwiftFlutterAcrcloudPlugin: NSObject, FlutterPlugin {
          } else {
             result(FlutterError(code: "FINGERPRINT_ERROR", message: "Failed to create fingerprint", details: nil))
          }
-    } else if call.method == "recognizeFingerPrint" {
+    } else if call.method == "recognizeFingerprint" {
          guard let args = call.arguments as? [String: Any],
               let flutterFingerprintData = args["fingerprint"] as? FlutterStandardTypedData else {
           result(FlutterError(code: "INVALID_ARGUMENT", message: "Missing or invalid fingerprint", details: nil))

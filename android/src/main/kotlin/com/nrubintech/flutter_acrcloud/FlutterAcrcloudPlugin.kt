@@ -20,6 +20,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
+import kotlinx.coroutines.*
 
 /** FlutterAcrcloudPlugin */
 class FlutterAcrcloudPlugin: FlutterPlugin, MethodCallHandler, PluginRegistry.RequestPermissionsResultListener, ActivityAware {
@@ -50,7 +51,7 @@ class FlutterAcrcloudPlugin: FlutterPlugin, MethodCallHandler, PluginRegistry.Re
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     if (call.method == "setUp") {
       if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-              == PackageManager.PERMISSION_GRANTED) {
+        == PackageManager.PERMISSION_GRANTED) {
         setUp(call, result)
       }
 
@@ -80,6 +81,31 @@ class FlutterAcrcloudPlugin: FlutterPlugin, MethodCallHandler, PluginRegistry.Re
       client.stopRecordToRecognize()
       isListening = false
       result.success(true)
+    }
+    else if (call.method == "createFingerprint") {
+      val byteData = call.argument<ByteArray>("pcmData")
+      val soundSample = call.argument<Int>("sampleRate") ?: 16000
+      val soundChannels = call.argument<Int>("channels") ?: 2
+      if (byteData == null) {
+        result.error("UNAVAILABLE","Empty Byte Data",null)
+      }
+      else {
+        val fpByteArray = createFingerprint(byteData,soundSample,soundChannels)
+        result.success(fpByteArray)
+      }
+    }
+
+    else if (call.method == "recognizeFingerprint") {
+      val byteData = call.argument<ByteArray>("fingerprint")
+      if (byteData == null) {
+        result.error("UNAVAILABLE","Empty Fingerprint Data",null)
+      }
+      else {
+        recogniseFingerprintAsync(byteData) { fingerprintResult ->
+          result.success(fingerprintResult)
+        }
+      }
+
     }
 
     else {
@@ -152,4 +178,27 @@ class FlutterAcrcloudPlugin: FlutterPlugin, MethodCallHandler, PluginRegistry.Re
   override fun onDetachedFromActivityForConfigChanges() {
     currentActivity = null
   }
+
+  private fun recogniseFingerprintAsync(
+    buffer: ByteArray,
+    callback: (String?) -> Unit
+  ) {
+    CoroutineScope(Dispatchers.IO).launch {
+      val result = client?.recognizeFingerprint(
+        buffer,
+        buffer.size,
+        ACRCloudConfig.RecognizerType.AUDIO,
+        null
+      )
+
+      withContext(Dispatchers.Main) {
+        callback(result)
+      }
+    }
+  }
+
+  private fun createFingerprint(pcmData: ByteArray, sampleRate: Int, channels: Int): ByteArray {
+    return ACRCloudClient.createClientFingerprint(pcmData,pcmData.size,sampleRate,channels)
+  }
+
 }
