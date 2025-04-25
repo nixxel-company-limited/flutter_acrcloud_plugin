@@ -84,8 +84,8 @@ class FlutterAcrcloudPlugin: FlutterPlugin, MethodCallHandler, PluginRegistry.Re
     }
     else if (call.method == "createFingerprint") {
       val byteData = call.argument<ByteArray>("pcmData")
-      val soundSample = call.argument<Int>("sampleRate") ?: 16000
-      val soundChannels = call.argument<Int>("channels") ?: 2
+      val soundSample = call.argument<Int>("sampleRate") ?: 8000
+      val soundChannels = call.argument<Int>("channels") ?: 1
       if (byteData == null) {
         result.error("UNAVAILABLE","Empty Byte Data",null)
       }

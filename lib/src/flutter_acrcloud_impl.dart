@@ -101,17 +101,18 @@ class ACRCloud {
     return _session!;
   }
 
-  static Future<Uint8List?> createFingerPrint(Uint8List pcmData,int soundSampleRate,int soundChannels) async {// final String base64PCM = base64Encode(pcmData);
-    final result = await _channel
-        .invokeMethod<Uint8List>('createFingerprint', {
-          'pcmData': pcmData,
-          'sampleRate': soundSampleRate,
-          'soundChannels':soundChannels
-        });
+  static Future<Uint8List?> createFingerPrint(
+      Uint8List pcmData, int soundSampleRate, int soundChannels) async {
+    final result = await _channel.invokeMethod<Uint8List>('createFingerprint', {
+      'pcmData': pcmData,
+      'sampleRate': soundSampleRate,
+      'channels': soundChannels
+    });
     return result;
   }
 
-  static Future<ACRCloudResponse?> recognizeFingerprint(Uint8List fingerprint) async {
+  static Future<ACRCloudResponse?> recognizeFingerprint(
+      Uint8List fingerprint) async {
     if (!_isSetUp) {
       throw StateError(
           'ACRCloud is not set up! You forgot to call ACRCloud.setUp()');
