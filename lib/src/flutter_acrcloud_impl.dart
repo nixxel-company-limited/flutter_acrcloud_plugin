@@ -102,11 +102,11 @@ class ACRCloud {
   }
 
   static Future<Uint8List?> createFingerPrint(
-      Uint8List pcmData, int soundSampleRate, int soundChannels) async {
+      Uint8List pcmData, int soundSampleRate, int channels) async {
     final result = await _channel.invokeMethod<Uint8List>('createFingerprint', {
       'pcmData': pcmData,
       'sampleRate': soundSampleRate,
-      'channels': soundChannels
+      'channels': channels
     });
     return result;
   }
