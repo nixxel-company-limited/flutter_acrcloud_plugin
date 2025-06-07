@@ -1,4 +1,4 @@
-library flutter_acrcloud;
+library flutter_acrcloud_plugin;
 
 import 'package:json_annotation/json_annotation.dart';
 

@@ -1,10 +1,10 @@
-library flutter_acrcloud;
+library flutter_acrcloud_plugin;
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_acrcloud/src/acrcloud_response.dart';
+import 'package:flutter_acrcloud_plugin/src/acrcloud_response.dart';
 
 /// A configuration object with the values necessary to access the ACRCloud API.
 class ACRCloudConfig {

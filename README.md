@@ -1,11 +1,12 @@
-# flutter_acrcloud
+# flutter_acrcloud_plugin
+
+<!-- Keywords: flutter_acrcloud_plugin, acr_cloud, flutter, music recognition, audio fingerprinting -->
 
 A Flutter plugin for the ACRCloud music recognition API.
 This is a third-party plugin; there is no relation between the developer and ACRCloud.
 
-**Note**: I built this plugin to support [a personal project](https://github.com/nrubin29/finale).
-As such, it is very bare bones and potentially buggy.
-If you encounter a bug or need a feature added, you can open an issue or, better yet, fix it yourself and submit a PR.
+
+**Original repository:** [github.com/nrubin29/flutter_acrcloud](https://github.com/nrubin29/flutter_acrcloud)
 
 ## Setup
 
@@ -34,10 +35,62 @@ In order to get access to the microphone, you have to explicitly list the requir
 
 ## Usage
 
-Consult the `example` app for a real-world example.
-
 1. Call `ACRCloud.setUp()` to provide your API key, API secret, and preferred host. `setUp()` takes an instance of `ACRCloudConfig`.
 2. When you want to recognize a song, call `ACRCloud.startSession()` to start a recording session. You will get an instance of `ACRCloudSession` that you can use to interact with the session.
 3. To get the current volume, you can use the `volume` property of `ACRCloudSession`. This is a `Stream` that is updated every time a new volume value is recoded.
 4. To cancel a session, just call `cancel()` on the session.
 5. To get the result of a session, you can `await` the `result` property of the session. If the result is `null`, then the request was cancelled. Otherwise, you'll get an instance of `ACRCloudResponse` that contains all the information.
+
+## Response
+
+The result of a recognition session is an `ACRCloudResponse` object. This contains:
+
+- `status`: Information about the request status and any errors.
+- `metadata`: Contains lists of matched music tracks (`music`) and custom files (`customFiles`).
+
+Each music item in `metadata.music` contains details such as:
+- `label`
+- `album` (with `name`)
+- `artists` (list of artist objects with `name`)
+- `acrId`
+- `resultFrom`
+- `title`
+- `durationMs`
+- `releaseDate`
+- `score`
+- `playOffsetMs`
+
+Custom file items in `metadata.customFiles` contain:
+- `acrId`
+- `title`
+- `durationMs`
+- `score`
+- `playOffsetMs`
+
+Refer to the source code for full details on the response structure.
+
+## Advanced Usage
+
+### Creating and Recognizing Fingerprints
+
+You can use the following static methods for advanced scenarios where you want to generate and recognize audio fingerprints manually:
+
+- **createFingerPrint**  
+  Generates an audio fingerprint from raw PCM data.  
+  ```dart
+  Uint8List? fingerprint = await ACRCloud.createFingerPrint(
+    pcmData, // Uint8List of PCM audio data
+    sampleRate, // int, e.g. 44100
+    channels, // int, e.g. 1 or 2
+  );
+  ```
+
+- **recognizeFingerprint**  
+  Recognizes a song from a previously generated fingerprint.  
+  ```dart
+  ACRCloudResponse? response = await ACRCloud.recognizeFingerprint(
+    fingerprint, // Uint8List fingerprint data
+  );
+  ```
+
+These methods are useful if you want to handle audio recording and processing yourself, or if you want to recognize audio from sources other than the microphone.
