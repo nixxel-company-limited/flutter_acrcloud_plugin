@@ -94,3 +94,40 @@ You can use the following static methods for advanced scenarios where you want t
   ```
 
 These methods are useful if you want to handle audio recording and processing yourself, or if you want to recognize audio from sources other than the microphone.
+
+## Example
+
+Here is a minimal example of how to use `flutter_acrcloud_plugin` in your Flutter app:
+
+```dart
+import 'package:flutter_acrcloud_plugin/flutter_acrcloud_plugin.dart';
+
+void main() async {
+  // Set up the plugin with your ACRCloud credentials
+  await ACRCloud.setUp(
+    const ACRCloudConfig(
+      'your_access_key',
+      'your_access_secret',
+      'your_host',
+    ),
+  );
+
+  // Start a recognition session
+  final session = ACRCloud.startSession();
+
+  // Listen to volume changes (optional)
+  session.volumeStream.listen((volume) {
+    print('Current volume: $volume');
+  });
+
+  // Await the result
+  final result = await session.result;
+  if (result != null) {
+    print('Recognized: \\${result.metadata?.music.first.title}');
+  } else {
+    print('Recognition cancelled or failed.');
+  }
+}
+```
+
+Replace `'your_access_key'`, `'your_access_secret'`, and `'your_host'` with your actual ACRCloud credentials.
