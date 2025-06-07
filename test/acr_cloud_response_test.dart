@@ -1,4 +1,4 @@
-import 'package:flutter_acrcloud/src/acrcloud_response.dart';
+import 'package:flutter_acrcloud_plugin/src/acrcloud_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -30,6 +30,43 @@ void main() {
     });
   });
 }
+
+// Helper for serialization using generated code
+Map<String, dynamic> responseToJson(ACRCloudResponse response) => {
+      'status': {
+        'msg': response.status.msg,
+        'version': response.status.version,
+        'code': response.status.code,
+      },
+      'metadata': response.metadata == null
+          ? null
+          : {
+              'music': response.metadata!.music
+                  .map((m) => {
+                        'label': m.label,
+                        'album': {'name': m.album.name},
+                        'artists':
+                            m.artists.map((a) => {'name': a.name}).toList(),
+                        'acrid': m.acrId,
+                        'result_from': m.resultFrom,
+                        'title': m.title,
+                        'duration_ms': m.durationMs,
+                        'release_date': m.releaseDate,
+                        'score': m.score,
+                        'play_offset_ms': m.playOffsetMs,
+                      })
+                  .toList(),
+              'custom_files': response.metadata!.customFiles
+                  .map((c) => {
+                        'acrid': c.acrId,
+                        'title': c.title,
+                        'duration_ms': c.durationMs,
+                        'score': c.score,
+                        'play_offset_ms': c.playOffsetMs,
+                      })
+                  .toList(),
+            }
+    };
 
 // Sample Metadata from https://docs.acrcloud.com/metadata/custom-files
 const _mockCustomFilesData = {
