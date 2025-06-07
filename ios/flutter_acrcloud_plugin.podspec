@@ -3,7 +3,7 @@
 # Run `pod lib lint flutter_acrcloud.podspec' to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'flutter_acrcloud'
+  s.name             = 'flutter_acrcloud_plugin'
   s.version          = '0.0.1'
   s.summary          = 'A Flutter plugin for the ACRCloud music recognition API'
   s.description      = <<-DESC
