@@ -63,10 +63,6 @@ class ACRCloud {
   /// You only need to call this function once; subsequent calls will be
   /// ignored.
   static Future<void> setUp(ACRCloudConfig config) async {
-    if (_isSetUp) {
-      return;
-    }
-
     _channel.setMethodCallHandler((call) async {
       if (call.method == 'volume') {
         _session?._volume.add(call.arguments);
